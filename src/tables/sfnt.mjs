@@ -17,6 +17,7 @@ import maxp from './maxp.mjs';
 import _name from './name.mjs';
 import os2 from './os2.mjs';
 import post from './post.mjs';
+import gpos from './gpos.mjs';
 import gsub from './gsub.mjs';
 import meta from './meta.mjs';
 import colr from './colr.mjs';
@@ -356,6 +357,7 @@ function fontToSfntTable(font) {
 
     // Optional tables
     const optionalTables = {
+        gpos,
         gsub,
         cpal,
         colr,
@@ -368,9 +370,19 @@ function fontToSfntTable(font) {
         svg,
     };
 
+    const kerningPairs = {};
+
+    const indexFirst = font.charToGlyphIndex('T');
+    const indexSecond = font.charToGlyphIndex('r');
+
+    kerningPairs[`${indexFirst},${indexSecond}`] = -50;
+
+
+
     const optionalTableArgs = {
         avar: [font.tables.fvar],
         fvar: [font.names],
+        gpos: [kerningPairs],
     };
 
     for (let tableName in optionalTables) {
